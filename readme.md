@@ -4,7 +4,7 @@
 
 ## Prerequisites
 
-- 8GB USB Drive
+- 16GB USB Drive
 - OSX Catalina from the App Store
 - 🤞 Lots of patience
 
@@ -24,7 +24,7 @@ Hard to believe this build was from January 2014 and is still running great.
 
 > Hackintoshes are very picky on hardware so make sure you choose wisely.<br/> [Tonymacx86 Buyers Guide][buyersguide] is a great resource to choose from guaranteed working builds.
 
-## Step One: Bootable USB
+## Step One: Make a Catalina Bootable USB (the mac approved way)
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=ekp8w6pel84
 " target="_blank"><img src="http://img.youtube.com/vi/ekp8w6pel84/0.jpg" 
@@ -35,82 +35,94 @@ alt="IMAGE ALT TEXT HERE" width="600" height="400" border="10" /></a>
 </figcaption>
 
 1. You will need to have a copy of Catalina from the App store.
-2. Format USB Drive to `MacOS Extended(Journaled)` and name it `USB`.
-   ![USB Creation](https://markwithtech.com/assets/files/2018-06-16/1529185565-56194-disk-utility-3.png)
+2. Format USB Drive to `MacOS Extended(Journaled)`. Set Scheme to `GUID Partition Map` and name it `USB`.
+   ![USB Creation](./make-usb.png)
 3. Open Terminal and run:
 
-```terminal
-sudo /Applications/Install\ macOS\ Catalina.app/Contents/Resources/createinstallmedia --volume /Volumes/USB/
+```sh
+
+sudo /Applications/Install\ macOS\ Catalina.app/Contents/Resources/createinstallmedia --nointeraction --downloadassets --volume /Volumes/USB/
+
 ```
 
-## Step Two: Clover Configuration
+> ☕ this process takes a while (like really long maybe 15-30 mins) so get a coffee refill
 
-Clover configuration is a two part process. You'll have to do it once on the USB Drive and then again on the install drive. [TechHowdy][techhowdy] has a great guide for this.
+## Step Two: Clover Configuration on your USB
+
+> Clover configuration is a two part process. You'll have to do it once on the USB Drive and then again on the install drive post-install.
+
+### Get Clover and your kexts(drivers for mac)
+
+#### Minimum
+
+- [Clover Bootloader](https://github.com/Dids/clover-builder/releases)
+- [FakeSMC.kext](https://bitbucket.org/RehabMan/os-x-fakesmc-kozlek/downloads/)
+- [USBInjectAll.kext](https://bitbucket.org/RehabMan/os-x-usb-inject-all/downloads/)
+- [Lilu.kext](https://github.com/acidanthera/Lilu/releases)
+- [WhateverGreen.kext](https://github.com/acidanthera/WhateverGreen/releases)
+
+#### Extras for my build
+
+- [IntelMausiEthernet 2.5.0](https://www.insanelymac.com/forum/files/file/396-intelmausiethernet/)
+- [Apple ALC Sound](https://github.com/acidanthera/AppleALC/releases)
+
+![clover](./kexts.png)
+
+Most of these are zip files so extract them and look for the file extension `.kext`.
 
 ### USB Drive Config
 
-1. [Download Clover EFI Bootloader][clover]
-2. Make sure your USB Drive is inserted.
+> Had some issues with clover on my macboook Pro [so I followed this guide to disable SIP](https://www.reddit.com/r/hackintosh/comments/d9pbhy/clover_cannot_install_wo_ensuring_file_system_is/)
+
+```text
+FIX: Click the Apple symbol in the Menu bar.
+Click Restart…
+Hold down Command-R to reboot into Recovery Mode.
+Click Utilities.
+Select Terminal.
+Type `csrutil disable`.
+Press Return or Enter on your keyboard.
+Click the Apple symbol in the Menu bar.
+Click Restart…
+```
+
+> make sure you re-able SIP after you are done by running `csrutil disable` reversing the process above
+
+1. Make sure your USB Drive is inserted.
+2. run the `clover_version_rev.pkg` that you downloaded.
 3. On the Destination Select tab, click on the option Change Install Location.
 4. Select the USB Flash Drive.
-5. Now on the Installation Type Tab Click on the Customize option. Select the option Install for UEFI booting only.
-6. Click on the Dropdown for Drivers64UEFI and Select the following options:
-
-![Clover](http://techhowdy.com/wp-content/uploads/2018/06/How-to-Create-bootable-USB-for-Hackintosh-Catalina-20.png)
-
-- AppleImageCodec-64.UEFI
-- AppleKeyAggregator-64.UEFI
-- AppleUITheme-64.UEFI
-- DataHubDxe-64.UEFI
-- FirmwareVolume-64.UEFI
-- FSInject-64.UEFI
-- SMCHelper-64.UEFI
-- VboxHfs-64.UEFI
-- Apfs
-- OsxAptioFix2Drv-64
-- PartitionDxe-64
+   ![cloverusb](./cloverusb.png)
+5. Now on the Installation Type Tab Click on the Customize option.
+   ![clover](./clover.png)
 
 ### Copying Files to EFI partition on Hackintosh macOS Catalina USB Installer
 
-1. Go to Finder and open mounted EFI. Now open the folder EFI > Clover > drivers64.
-1. Copy the [apfs.efi][apfs] file in `drivers64` and the `drivers64UEFI` folder.
-1. Now go back to the `Clover` folder and open the `kexts/Other` folder.
-1. Copy the [kexts][kextslink] in the `Other` folder.
-1. Now go back to Clover folder and Delete `config.plist` file and Paste the empty `config.plist` [file][emptyconfig].
+![efi](./efi.png)
 
-## Step Three: Install
+Open up the EFI partition (location: /Volumes/EFI/), and navigate to "EFI", then to "CLOVER". Then, navigate to the "kexts" folder, then to "Other".
 
-1. Boot from your new USB Drive (on USB2 port) and when it boots up, Go to `Disk Utilty` and format your SSD to use `APFS`.
-2. Install MacOSX Catalina.
-   -During installation process the Mac OS will reboot several Times.
+You should be in the directory /Volumes/EFI/CLOVER/kexts/Other/. In here, you'll want to drop in the required Kexts as well as any other Kexts you need for your system.
+
+## Step Three: Install macOS Catalina from new bootable USB
+
+1. Boot from your new USB Drive (on USB2 port).
+2. From the clover menu, enter option `o` and enter `-lilubetaall` on the Boot Args option and then **Return**
+   ![clover-lilu](./clover-lilu.png)
+3. Boot from macOS Intall option
+4. and when it boots up, Go to `Disk Utilty` and format your SSD to use `APFS`.
+5. Install macOSX Catalina.
+
+- During installation process the macOS will reboot several times.
+
+- remember to select boot from Catalina if its not already selected
 
 ## Step Four: Post-Install
 
-1. Now you will need to do Clover EFI steps again but this time to your new Catalina SSD. Follow same steps as in Step 2 but choose Catalina SSD rather than the USB Drive.
-2. I had issues with Intel 4600 video and sound drivers.
-
-- Sound Issues with my [ALC 892 kexts solution][alcsound]. I've added the sound kexts and Lilu so hope this won't be an issue.
-- Video issue was not using 2K screen to full resolution. Solution was found in this [YouTube Video][intel4600youtube] that describes using Clover Configuration to tweak video settings.
-
-3. Save Clover Configuration and reboot to make sure everything is working.
+1. Now you will need to do the Clover EFI steps again but this time to your new Catalina SSD. Follow same steps as in Step 2 but choose Catalina SSD rather than the USB Drive.
 
 ## Credits
 
-### [Step By Step Process To Install Hackintosh macOS Catalina][catalinainstallguide]
+### [GUIDE - Create Catalina 10.14 Hackintosh USB Installer](https://markwithtech.com/Thread-GUIDE-Create-Catalina-10-15-Hackintosh-USB-Installer)
 
-### [GUIDE - Create Catalina 10.14 Hackintosh USB Installer](https://markwithtech.com/d/183-guide-create-Catalina-10-14-hackintosh-usb-installer)
-
-[githubssh]: https://help.github.com/articles/connecting-to-github-with-ssh/
-[nightowliterm]: https://github.com/nickcernis/iterm2-night-owl
-[intel4600youtube]: https://youtu.be/sL3JmGvbAxQ
-[catalinainstallguide]: http://techhowdy.com/process-to-install-hackintosh-macos-Catalina/
-[alcsound]: https://www.reddit.com/r/hackintosh/comments/4e23w6/guide_native_audio_with_clover_applealckext/
-[homebrewfonts]: https://github.com/Homebrew/homebrew-cask-fonts
-[googleplus]: https://plus.google.com/+FrankPigeon/posts/H5Cm7CXGwxs
 [buyersguide]: https://www.tonymacx86.com/buyersguide/building-a-customac-hackintosh-the-ultimate-buyers-guide/
-[clover]: https://sourceforge.net/projects/cloverefiboot/
-[cloverconfig]: https://mackie100projects.altervista.org/download-clover-configurator/
-[techhowdy]: http://techhowdy.com/process-to-install-hackintosh-macos-Catalina/
-[apfs]: https://drive.google.com/open?id=1Rwtarw3zTXAXsBP6a9Aadul84lNR4x1R
-[kextslink]: https://drive.google.com/open?id=1cCO6xVnCuIPAQzBP4YQVnmZDNTevZJWE
-[emptyconfig]: https://drive.google.com/open?id=1C7ZITyMw41I2yc_RoZR3apoR3C8eud1K

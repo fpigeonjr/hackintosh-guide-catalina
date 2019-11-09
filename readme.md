@@ -28,7 +28,7 @@ Hard to believe this build was from January 2014 and is still running great.
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=ekp8w6pel84
 " target="_blank"><img src="http://img.youtube.com/vi/ekp8w6pel84/0.jpg" 
-alt="IMAGE ALT TEXT HERE" width="240" height="180" border="10" /></a>
+alt="IMAGE ALT TEXT HERE" width="600" height="400" border="10" /></a>
 
 <figcaption>
   Great video explaining the process

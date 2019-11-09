@@ -26,11 +26,9 @@ Hard to believe this build was from January 2014 and is still running great.
 
 ## Step One: Bootable USB
 
-<!-- blank line -->
-<figure class="video_container">
-  <iframe src=""https://www.youtube.com/embed/ekp8w6pel84" frameborder="0" allowfullscreen="true"> </iframe>
-</figure>
-<!-- blank line -->
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=ekp8w6pel84
+" target="_blank"><img src="http://img.youtube.com/vi/ekp8w6pel84/0.jpg" 
+alt="IMAGE ALT TEXT HERE" width="240" height="180" border="10" /></a>
 
 <figcaption>
   Great video explaining the process

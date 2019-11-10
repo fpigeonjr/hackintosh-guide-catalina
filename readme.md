@@ -72,7 +72,7 @@ Most of these are zip files so extract them and look for the file extension `.ke
 
 ### USB Drive Config
 
-> Had some issues with clover on my macboook Pro [so I followed this guide to disable SIP](https://www.reddit.com/r/hackintosh/comments/d9pbhy/clover_cannot_install_wo_ensuring_file_system_is/)
+> Had some issues with clover on my MacBoook Pro [so I followed this guide to disable SIP](https://www.reddit.com/r/hackintosh/comments/d9pbhy/clover_cannot_install_wo_ensuring_file_system_is/)
 
 ```text
 FIX: Click the Apple symbol in the Menu bar.
@@ -86,7 +86,7 @@ Click the Apple symbol in the Menu bar.
 Click Restart…
 ```
 
-> make sure you re-able SIP after you are done by running `csrutil disable` reversing the process above
+> make sure you re-able SIP after you are done by running `csrutil enable` reversing the process above
 
 1. Make sure your USB Drive is inserted.
 2. run the `clover_version_rev.pkg` that you downloaded.
@@ -111,7 +111,7 @@ You should be in the directory /Volumes/EFI/CLOVER/kexts/Other/. In here, you'll
    ![clover-lilu](./clover-lilu.png)
 3. Boot from macOS Intall option
 4. and when it boots up, Go to `Disk Utilty` and format your SSD to use `APFS`.
-5. Install macOSX Catalina.
+5. Install macOS Catalina.
 
 - During installation process the macOS will reboot several times.
 
